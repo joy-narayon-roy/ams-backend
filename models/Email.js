@@ -17,7 +17,7 @@ const emailSchema = new Schema(
     },
     type: {
       type: String,
-      enum: ["GMAIL", "EMAIL", "YAHOO", "HOTMAIL", "OUTLOOK"],
+      // enum: ["GMAIL", "EMAIL", "YAHOO", "HOTMAIL", "OUTLOOK"],
       required: true,
     },
     phone: {

@@ -1,7 +1,13 @@
 const mongoose = require("mongoose");
 
-function connectDB(connectionStr) {
-  return mongoose.connect(connectionStr);
+/**
+ *
+ * @param {string} uri
+ * @param {import('mongoose').ConnectOptions} options
+ * @returns
+ */
+function connectDB(uri, options) {
+  return mongoose.connect(uri, options);
 }
 
 module.exports = connectDB;

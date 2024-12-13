@@ -49,4 +49,5 @@ async function signup({ email, name, password, pin }) {
     token: jwt.sign({ id: user.id }, process.env.JWT_KEY),
   };
 }
+
 module.exports = { login, signup };

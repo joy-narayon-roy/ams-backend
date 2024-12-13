@@ -58,7 +58,7 @@ async function updateEmail(
 ) {
   const email = await Email.findById(id);
   if (!email) {
-    throw createEmail("Email not exist", 404);
+    throw createError("Email not exist", 404);
   }
 
   if (address) {
@@ -74,10 +74,15 @@ async function updateEmail(
   const phone = await Phone.findOne({ number: phone_number });
 
   email.user_name = user_name ? user_name : email.user_name;
-  // console.log(address, " - ", email.address);
   email.address = address ? address : email.address;
-  email.phone = phone ? phone.id : email.phone;
-  email.phone_number = phone ? null : phone_number;
+
+  if (phone) {
+    email.phone = phone.id;
+    email.phone_number = null;
+  } else if (phone_number) {
+    email.phone = null;
+    email.phone_number = phone_number;
+  }
   email.password = password ? password : email.password;
   email.type = type ? type : email.type;
 

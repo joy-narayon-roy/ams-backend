@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.css": "/static/css/main.f93702b5.css",
+    "main.js": "/static/js/main.cce13f37.js",
+    "static/media/te_logo.png": "/static/media/te_logo.d0874a5bcc8b7cea9b89.png",
+    "static/media/hotmail.png": "/static/media/hotmail.24b286520e5a30d694d2.png",
+    "static/media/bl_logo.png": "/static/media/bl_logo.2db74ea16c23cdf6ce4e.png",
+    "static/media/empty.png": "/static/media/empty.14c6c79762da8aea94a4.png",
+    "static/media/404img.png": "/static/media/404img.348221d39d202835c618.png",
+    "static/media/500img.png": "/static/media/500img.ee4139dfd0345bbb9275.png",
+    "static/media/instagram.png": "/static/media/instagram.79535458a8a6d88f81d4.png",
+    "static/media/mail.png": "/static/media/mail.feacb9e2e98a818bf2b4.png",
+    "static/media/gp_logo.png": "/static/media/gp_logo.66c72a638e2eb3b19184.png",
+    "static/media/add.png": "/static/media/add.456d2de803b706e642ab.png",
+    "static/media/pdf_download.png": "/static/media/pdf_download.9f196e29efcb183b007f.png",
+    "static/media/up-arrow.png": "/static/media/up-arrow.44c4f6284244cb9bad10.png",
+    "static/media/whatsapp.png": "/static/media/whatsapp.c75084c4f67a9e4b0ba3.png",
+    "static/media/at_logo.png": "/static/media/at_logo.c10623ea3aeba2ee8c0d.png",
+    "static/media/facebook.png": "/static/media/facebook.01a470d813915c298403.png",
+    "static/media/yahoo.png": "/static/media/yahoo.fb10e6076cfd5b00f9e3.png",
+    "static/media/sim.png": "/static/media/sim.a9c9b172e0a9b87a5a13.png",
+    "static/media/twitter.png": "/static/media/twitter.894988327f8d68209e91.png",
+    "static/media/web.png": "/static/media/web.3cd9e78f3ad07c078b21.png",
+    "static/media/gmail.png": "/static/media/gmail.a2f2146f929409405da0.png",
+    "static/media/outlook.png": "/static/media/outlook.5e0bcbe28be0345dd4d8.png",
+    "static/media/ro_logo.png": "/static/media/ro_logo.4550c3f0ed157e8fea6a.png",
+    "static/media/email.png": "/static/media/email.48ee7bb0cce02cf91a8c.png",
+    "static/media/loading.svg": "/static/media/loading.d2e3fe27c300c7c7335e57ef2ef111ab.svg",
+    "index.html": "/index.html",
+    "main.f93702b5.css.map": "/static/css/main.f93702b5.css.map",
+    "main.cce13f37.js.map": "/static/js/main.cce13f37.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f93702b5.css",
+    "static/js/main.cce13f37.js"
+  ]
+}
