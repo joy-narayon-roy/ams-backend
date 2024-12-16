@@ -1,1 +1,1 @@
-OK
+URL - https://ams-backend-avjd.onrender.com

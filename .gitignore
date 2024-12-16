@@ -142,7 +142,7 @@ dist
 # compiled output
 dist/
 
-# public/**/*
+public/**/*
 tmp/
 # app/**/*.js
 # app/**/*.js.map
