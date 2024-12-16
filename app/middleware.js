@@ -4,6 +4,8 @@ const cors = require("cors");
 
 const allowedOrigins = [
   "https://mydemoams.netlify.app",
+  "https://myams-39bda.web.app",
+  "https://myams-39bda.firebaseapp.com",
   "http://localhost:5173",
 ];
 
