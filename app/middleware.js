@@ -17,7 +17,7 @@ const corsConfigs = {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  methods: ["GET", "POST"],
+  // methods: ["GET", "POST",],
   // credentials: true
 };
 const middleware = [
