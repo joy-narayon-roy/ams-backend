@@ -17,8 +17,6 @@ const corsConfigs = {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  // methods: ["GET", "POST",],
-  // credentials: true
 };
 const middleware = [
   morgan("dev"),
@@ -26,9 +24,5 @@ const middleware = [
   express.urlencoded({ extended: true }),
   cors(corsConfigs),
 ];
-
-// if (PROCESS_TYPE) {
-//   middleware.push(cors({}));
-// }
 
 module.exports = middleware;

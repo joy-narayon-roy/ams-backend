@@ -109,7 +109,7 @@ async function updatePhoneById(req, res, next) {
     phone.number = number ? number : phone.number;
     phone.registered_by = registered_by ? registered_by : phone.registered_by;
     phone.user_name = user_name ? user_name : phone.user_name;
-    phone.active = active ? active : phone.accounts;
+    phone.active = active == true || active == false ? active : phone.active;
 
     await phone.save();
 
