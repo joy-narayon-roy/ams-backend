@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const { ServerError } = require("../models");
 
 const notFoundHandler = (_req, res, next) => {
@@ -6,6 +7,28 @@ const notFoundHandler = (_req, res, next) => {
   err.status = 404;
   next(err);
 };
+
+function parseError(error) {
+  const constructor_name = error.constructor.name;
+  if (error instanceof Error) {
+    return {
+      constructor_name,
+      message: error.message,
+      name: error.name,
+      stack: error.stack,
+    };
+  } else if (Object.hasOwn(error, toJSON)) {
+    return {
+      ...error.toJSON(),
+      constructor_name,
+    };
+  } else {
+    return {
+      constructor_name,
+      message: String(error),
+    };
+  }
+}
 
 /**
  *
@@ -43,7 +66,7 @@ const errorHandler = async (error, req, res, next) => {
       method: req.method,
       headers: req.headers,
       body: req.body,
-      error: error.toJSON(),
+      error: parseError(error),
     };
     const newError = new ServerError(errorObj);
     await newError.save();

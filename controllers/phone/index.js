@@ -10,27 +10,27 @@ const { createError } = require("../../utilities");
  */
 async function getPhones(req, res, next) {
   try {
-    const { user_name, number, registered_by } = req.query;
+    const { user_name, number, registered_by, description } = req.query;
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+    const author = user.uid;
 
     if (!user_name && !number && !registered_by) {
-      const phones = await service.phone.getPhone();
+      const phones = await service.phone.getPhones(author);
       return res.status(200).json(phones);
     }
 
-    let queyObj = {
+    const phones = await service.phone.getPhones(author, {
       user_name,
       number,
       registered_by,
-    };
-
-    queyObj = Object.entries(queyObj)
-      .filter((v) => v[1])
-      .reduce((pre, cur) => {
-        pre[cur[0]] = cur[1];
-        return pre;
-      }, {});
-
-    const phones = await service.phone.getPhone("o", queyObj);
+      description,
+    });
     return res.status(200).json(phones);
   } catch (e) {
     next(e);
@@ -45,9 +45,19 @@ async function getPhones(req, res, next) {
  */
 async function getPhoneById(req, res, next) {
   try {
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+
     const { id } = req.params;
-    const phone = await service.phone.getPhone("_id", id);
-    return res.status(200).json(phone);
+    const author = user.uid;
+
+    const phones = await service.phone.getPhones(author, { id });
+    return res.status(200).json(phones.length == 0 ? null : phones);
   } catch (e) {
     next(e);
   }
@@ -59,23 +69,27 @@ async function getPhoneById(req, res, next) {
  * @param {import("express").Response} res
  * @param {import("express").NextFunction} next
  */
-async function postPhoneById(req, res, next) {
+async function postPhone(req, res, next) {
   try {
-    const { number, registered_by, user_name, active } = req.body;
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+
+    const { number, registered_by, user_name, active, description } = req.body;
     if (!number || !registered_by || !user_name) {
       throw createError("Provide valid data.", 400);
     }
-    const phone_exist = await service.phone.getPhone("number", number);
 
-    if (phone_exist.length > 0) {
-      throw createError("Phone already exist.", 400);
-    }
-    const { user_id } = req;
-    const new_phone = await service.phone.createPhone(user_id, {
+    const new_phone = await service.phone.createPhone(user.uid, {
+      active,
       number,
       registered_by,
       user_name,
-      active,
+      description,
     });
     return res.status(200).json(new_phone);
   } catch (e) {
@@ -91,27 +105,25 @@ async function postPhoneById(req, res, next) {
  */
 async function updatePhoneById(req, res, next) {
   try {
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+
     const { id } = req.params;
-    const { user_name, number, registered_by, active } = req.body;
 
-    if (number) {
-      const exist_phone = await service.phone.getPhone("number", number);
-      if (exist_phone.length > 0) {
-        throw createError("Number already exist.", 400);
-      }
-    }
+    const { user_name, number, registered_by, active, description } = req.body;
 
-    const phone = await Phone.findById(id);
-    if (!phone) {
-      throw createError("Phone not found", 404);
-    }
-
-    phone.number = number ? number : phone.number;
-    phone.registered_by = registered_by ? registered_by : phone.registered_by;
-    phone.user_name = user_name ? user_name : phone.user_name;
-    phone.active = active == true || active == false ? active : phone.active;
-
-    await phone.save();
+    const phone = await service.phone.updatePhone(user.uid, id, {
+      user_name,
+      number,
+      registered_by,
+      active,
+      description,
+    });
 
     return res.status(200).json(phone);
   } catch (e) {
@@ -127,13 +139,21 @@ async function updatePhoneById(req, res, next) {
  */
 async function deletePhoneById(req, res, next) {
   try {
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+
     const { id } = req.params;
 
     if (!id) {
       throw createError("Provide a valid id.", 400);
     }
 
-    const data = await service.phone.deletePhoneById(id);
+    const data = await service.phone.deletePhoneById(user.uid, id);
     return res.status(200).json(data);
   } catch (e) {
     next(e);
@@ -143,7 +163,7 @@ async function deletePhoneById(req, res, next) {
 module.exports = {
   getPhones,
   getPhoneById,
-  postPhoneById,
+  postPhone,
   updatePhoneById,
   deletePhoneById,
 };

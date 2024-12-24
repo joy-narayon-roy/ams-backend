@@ -1,4 +1,4 @@
-const { email: emailServices } = require("../../services");
+const services = require("../../services");
 const { createError } = require("../../utilities");
 
 /**
@@ -9,7 +9,33 @@ const { createError } = require("../../utilities");
  */
 async function getEmail(req, res, next) {
   try {
-    const email = await emailServices.getEmail().populate("phone");
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+    const author = user.uid;
+    const {
+      user_name,
+      address,
+      type,
+      phone_ref,
+      phone_number,
+      password,
+      description,
+    } = req.query;
+
+    const email = await services.email.getEmails(author, {
+      user_name,
+      address,
+      type,
+      phone_ref,
+      phone_number,
+      password,
+      description,
+    });
     return res.status(200).json(email);
   } catch (e) {
     next(e);
@@ -24,9 +50,17 @@ async function getEmail(req, res, next) {
  */
 async function getEmailById(req, res, next) {
   try {
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+    const author = user.uid;
     const { id } = req.params;
-    const email = await emailServices.getEmail("_id", id);
-    return res.status(200).json(email);
+    const email = await services.email.getEmails(author, { id });
+    return res.status(200).json(email.length > 0 ? email[0] : null);
   } catch (e) {
     next(e);
   }
@@ -40,24 +74,30 @@ async function getEmailById(req, res, next) {
  */
 async function createEmail(req, res, next) {
   try {
-    const { address, password, phone_number, type, user_name, ref } = req.body;
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+    const author = user.uid;
+
+    const { address, password, phone_number, phone_ref, type, user_name } =
+      req.body;
 
     if (!address || !password || !phone_number || !user_name) {
       throw createError("Provide vaild infomation to create email.", 400);
     }
 
-    const email = await emailServices.createEmail(
-      {
-        user_name,
-        address,
-        password,
-        phone_number,
-        type:
-          type ?? address.split("@").reverse()[0].split(".")[0].toUpperCase(),
-      },
-      ref,
-      req.user_id
-    );
+    const email = await services.email.createEmail(author, {
+      address,
+      password,
+      phone_number,
+      phone_ref,
+      type,
+      user_name,
+    });
     return res.status(200).json(email);
   } catch (e) {
     next(e);
@@ -72,12 +112,53 @@ async function createEmail(req, res, next) {
  */
 async function updateEmail(req, res, next) {
   try {
-    const { id } = req.params;
-    const { address, password, phone_number, type, user_name } = req.body;
-    const email = await emailServices.updateEmail(id, {
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+    const author = user.uid;
+
+    const allowToUpdate = [
+      "address",
+      "password",
+      "phone_number",
+      "phone_ref",
+      "type",
+      "user_name",
+      "description",
+    ];
+
+    const req_body = Object.entries(req.body)
+      .filter(([k, v]) => v && allowToUpdate.includes(k))
+      .reduce((pre, [k, v]) => {
+        pre[k] = v;
+        return pre;
+      }, {});
+
+    if (Object.keys(req_body).length == 0) {
+      throw createError("Provide info to update email.", 400);
+    }
+
+    const {
       address,
       password,
       phone_number,
+      phone_ref,
+      type,
+      user_name,
+      description,
+    } = req_body;
+
+    const { id } = req.params;
+    const email = await services.email.updateEmail(author, id, {
+      address,
+      description,
+      password,
+      phone_number,
+      phone_ref,
       type,
       user_name,
     });
@@ -95,8 +176,17 @@ async function updateEmail(req, res, next) {
  */
 async function deleteEmail(req, res, next) {
   try {
+    /**
+     * @type {import('firebase-admin').auth.DecodedIdToken|undefined}
+     */
+    const user = req.user;
+    if (!user) {
+      throw createError("Please login", 401);
+    }
+    const author = user.uid;
+
     const { id } = req.params;
-    const email = await emailServices.deleteEmail(id);
+    const email = await services.email.deleteEmail(author, id);
     return res.status(200).json(email);
   } catch (e) {
     next(e);
