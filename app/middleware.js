@@ -7,6 +7,9 @@ const allowedOrigins = [
   "https://myams-39bda.web.app",
   "https://myams-39bda.firebaseapp.com",
   "http://localhost:5173",
+  "http://localhost:2100",
+    "http://localhost:8100",
+
 ];
 
 const corsConfigs = {

@@ -1,4 +1,6 @@
+// require("dotenv").config({path:"./.env.production"});
 require("dotenv").config();
+
 const app = require("./app/app");
 const connectDB = require("./db/db");
 
